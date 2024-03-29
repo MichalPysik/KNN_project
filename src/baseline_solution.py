@@ -4,6 +4,7 @@ import os
 from torcheval.metrics import WordErrorRate
 import torch as t
 import string
+from sentence_transformers import SentenceTransformer, util
 
 # Load the baseline model
 model = whisper.load_model("large-v3")
@@ -38,14 +39,25 @@ for audio in X_test:
     trans = trans_punct.translate(str.maketrans('', '', string.punctuation))
     y_pred.append(trans)
 
-wer_metric = WordErrorRate()
-wer_metric.update(y_true, y_pred)
-wer = wer_metric.compute()
-print("WER:", wer)
+# Count hallucinations
+hallucinations = 0
+for i in range(len(y_true)):
+    wer_metric = WordErrorRate()
+    wer_metric.update(y_true[i], y_pred[i])
+    wer = wer_metric.compute()
+    if wer > 0.2:
+        _model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+        embedded_true = _model.encode(y_true[i], convert_to_tensor=True)
+        embedded_pred = _model.encode(y_pred[i], convert_to_tensor=True)
+        cos_sim = util.pytorch_cos_sim(embedded_true, embedded_pred)
+        #TODO also calculate perplexity
+        if cos_sim < 0.8:
+            hallucinations += 1
+            print("True:", y_true[i])
+            print("Pred:", y_pred[i])
 
-#cossim_metric = t.nn.CosineSimilarity(dim=1, eps=1e-6)
-#cossim = cossim_metric(t.tensor(y_true), t.tensor(y_pred))
-#print("Cosine similarity:", cossim)
+print("Total sencences:", len(y_true), "Hallucinatory sentences:", hallucinations)
+
 
 
 
