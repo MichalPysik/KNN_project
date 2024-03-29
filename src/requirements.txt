@@ -1,2 +1,6 @@
 openai-whisper
+torch
+torcheval
 pytube
+librosa
+

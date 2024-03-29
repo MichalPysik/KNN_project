@@ -28,8 +28,9 @@ def getYTVideoLinks():
 
 
 def transcribeVideo():
-    model = whisper.load_model("small")
-    whisper.DecodingOptions(language="cs")
+    # list all whisper models
+    model = whisper.load_model("large-v3")
+    #whisper.DecodingOptions()
 
     for file in os.listdir("../data/yt_videos/"):
         filename = file.split(".")[0]
