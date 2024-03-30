@@ -1,7 +1,7 @@
 import numpy as np
 
 
-# Augments a (short) audioclip by adding a pause, and white noise
+# Augments a (short) audioclip by adding a pause, and white noise (the goal is to induce hallucinations)
 def augment_short_audio(audio, sample_rate, add_noise=True, add_pause=True):
     if add_pause:
         silence = np.zeros(np.random.randint(sample_rate * 3, sample_rate * 30))

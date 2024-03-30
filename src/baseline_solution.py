@@ -3,7 +3,7 @@ import soundfile as sf
 import os
 import torch as t
 import string
-from hallucination_metrics import check_hallucinations
+from hallucination_detection import detect_hallucinations_article, detect_hallucinations_simple
 from data_augmentation import augment_short_audio
 
 # Load the baseline model
@@ -42,8 +42,10 @@ for audio in X_test:
     trans = trans_punct.translate(str.maketrans('', '', string.punctuation.replace("\'", "")))
     y_pred.append(trans)
 
-_ = check_hallucinations(y_true, y_pred, 0.3, 0.2, 200, verbose=True)
+_ = detect_hallucinations_simple(y_true, y_pred, verbose=True)
 
+exit()
+# Manual (human) check of hallucinations
 for i in range(len(y_true)):
     if y_true[i] == y_pred[i]:
         continue
