@@ -3,4 +3,6 @@ torch
 torcheval
 pytube
 librosa
+sentence-transformers
+evaluate
 
