@@ -16,7 +16,7 @@ number_tokens = [
     if all(c in "0123456789" for c in tokenizer.decode([i]).removeprefix(" "))
 ]
 
-directory = "data/test-other/LibriSpeech/test-other/8280/266249"
+directory = "data/test-other/LibriSpeech/test-other/4350/9170"
 X_test = []
 y_true = []
 
@@ -31,7 +31,7 @@ for entry in entries:
         sf.write(f"tmp/{entry.name[:-5]}_augmented.flac", augmented_audio, sr)
 
 # Load transcripts sorted lexicographically (lowercase, no punctuation except ')
-with open(directory + "/8280-266249.trans.txt") as tf:
+with open(directory + "/4350-9170.trans.txt") as tf:
     for line in tf:
         y_true.append(line.split(" ", 1)[1][:-1].lower().strip())
 

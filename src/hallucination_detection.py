@@ -42,29 +42,42 @@ def detect_hallucinations_article(y_true, y_pred, thr_wer, thr_cs, thr_per, verb
 def detect_hallucinations_simple(y_true, y_pred, verbose=False):
     assert(len(y_true) == len(y_pred))
 
-    # Prepare model for cosine similarity calculation
-    model_cos_sim = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+    # Detect the most common hallucinations by substring checking
+    common_hall_substrings = ["thank you", "thanks for", "bye", "the end"]
 
     # Count potential hallucinations
-    hallucinations = 0
+    potentional_halls = 0
+    common_halls = 0
     for i in range(len(y_true)):
         wer_metric = WordErrorRate()
         wer_metric.update(y_true[i], y_pred[i])
         wer = wer_metric.compute()
 
-        embedded_true = model_cos_sim.encode(y_true[i], convert_to_tensor=True)
-        embedded_pred = model_cos_sim.encode(y_pred[i], convert_to_tensor=True)
-        cos_sim = util.pytorch_cos_sim(embedded_true, embedded_pred)
-
-        if len(y_pred[i]) > len(y_true[i]) and cos_sim > (1.0 - wer):
-            hallucinations += 1
+        if len(y_pred[i]) > len(y_true[i]) and wer > 0.05:
+            potentional_halls += 1
             if verbose:
-                print("True:", y_true[i])
-                print("Pred:", y_pred[i])
-                print("WER:", wer, "Cosine similarity:", cos_sim.item())
-                print("\n")
+                print("True (potential):", y_true[i])
+                print("Pred (potential):", y_pred[i])
+                print("")
+
+        for substr in common_hall_substrings:
+            if substr in y_pred[i] and not substr in y_true[i]:
+                common_halls += 1
+                if verbose:
+                    print("True (common):", y_true[i])
+                    print("Pred (common):", y_pred[i])
+                    print("")
+                break
 
     if verbose:
-        print("Total sencences:", len(y_true), "\nPotentially hallucinatory sentences:", hallucinations)
+        print(
+            "Total sencences:", len(y_true),
+            "\nPotentially hallucinatory sentences:", potentional_halls,
+            "\nCommon hallucination sentences:", common_halls
+        )
 
-    return {"total_sentences": len(y_true), "potentially_hallucinatory_sentences": hallucinations}
+    return {
+        "total_sentences": len(y_true),
+        "potentially_hallucinatory_sentences": potentional_halls,
+        "common_hallucination_sentences": common_halls
+    }
