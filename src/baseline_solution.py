@@ -20,7 +20,7 @@ directory = "data/test-other/LibriSpeech/test-other/4350/9170"
 X_test = []
 y_true = []
 
-# Load audio files sorted lexicographically
+# Load audio files sorted lexicographically and augment them
 entries = sorted(os.scandir(directory), key=lambda x: x.name)
 for entry in entries:
     if entry.path.endswith(".flac") and entry.is_file():
@@ -42,6 +42,7 @@ for audio in X_test:
     trans = trans_punct.translate(str.maketrans('', '', string.punctuation.replace("\'", "")))
     y_pred.append(trans)
 
+# Print the detected hallucinations
 _ = detect_hallucinations_simple(y_true, y_pred, verbose=True)
 
 exit()
