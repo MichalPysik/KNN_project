@@ -10,7 +10,7 @@
     * requirements.txt - Seznam požadovaných Python balíčků.
 * /data/ - Složka obsahující data se kterými aktuálně pracujeme. - Součástí odevzdání
 je jen malá podmnožina kterou skript baseline_solution.py využije, zbytek je dostupný
-v repozitáři (případně v nejnovějším commitu ke dni 31.3.2024).
+v repozitáři (případně v nejnovějším commitu ke dni 1.4.2024).
 * /tmp/ - Složka kde skript ukládá augmentované nahrávky ze složky data (pro případnou manuální kontrolu).
 
 ## Návod na otestování aktuálního (checkpoint) stavu projektu.
