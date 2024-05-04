@@ -4,7 +4,7 @@ import os
 import torch as t
 import string
 from hallucination_detection import detect_hallucinations_article, detect_hallucinations_simple
-from data_augmentation import augment_short_audio
+from data_augmentation import augment_audio, augment_audio_v2
 
 
 def load_and_augment_dataset(base_directory):
@@ -19,13 +19,12 @@ def load_and_augment_dataset(base_directory):
         for subdirectory in os.scandir(directory.path):
             if not subdirectory.is_dir():
                 continue
-            print(subdirectory.path)
             # Iterate audio files sorted lexicographically and augment them
             entries = sorted(os.scandir(subdirectory.path), key=lambda x: x.name)
             for entry in entries:
                 if entry.path.endswith(".flac") and entry.is_file():
                     audio, sr = sf.read(entry.path)
-                    augmented_audio = augment_short_audio(audio, sr)
+                    augmented_audio = augment_audio_v2(audio, sr, add_sine_wave=False)
                     X_test.append(augmented_audio)
                 elif entry.path.endswith(".trans.txt") and entry.is_file():
                     with open(entry.path) as tf:
@@ -49,13 +48,20 @@ number_tokens = [
 # Load and augment the dataset
 base_directory = "data/test-other/LibriSpeech/test-other"
 X_test, y_true = load_and_augment_dataset(base_directory)
+X_test = X_test[:200]
+y_true = y_true[:200]
 
 # Predict the transcriptions (lowercase, no punctuation except ')
 y_pred = []
+i = 0
+single_percentage = len(X_test) // 100
 for audio in X_test:
     trans_punct = model.transcribe(audio, suppress_tokens=number_tokens)["text"].lower().strip()
     trans = trans_punct.translate(str.maketrans('', '', string.punctuation.replace("\'", "")))
     y_pred.append(trans)
+    i += 1
+    if i % single_percentage == 0:
+        print(f"{i // single_percentage} % transcriptions done")
 
 # Detect hallucinations and save the results
 results = detect_hallucinations_simple(y_true, y_pred, verbose=True)

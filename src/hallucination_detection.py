@@ -43,7 +43,7 @@ def detect_hallucinations_simple(y_true, y_pred, verbose=False):
     assert(len(y_true) == len(y_pred))
 
     # Detect the most common hallucinations by substring checking
-    common_hall_substrings = ["thank you", "thanks for", "bye", "the end"]
+    common_hall_substrings = ["thank", "thanks", "you", "watching", "bye", "end", "subscribe", "bell", "like", "comment", "share", "follow"]
 
     # Count potential hallucinations
     potentional_halls = 0
