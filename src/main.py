@@ -1,6 +1,6 @@
 import soundfile as sf
 import os
-from solution import WhisperV3Wrapped
+from solution import WhisperLargeV3Wrapped
 from hallucination_detection import detect_hallucinations_article, detect_hallucinations_simple
 from data_augmentation import augment_audio, augment_audio_v2
 
@@ -39,14 +39,11 @@ wrapped_model = WhisperLargeV3Wrapped()
 # Load and augment the dataset
 base_directory = "data/test-other/LibriSpeech/test-other"
 X_test, y_true = load_and_augment_dataset(base_directory)
-X_test = X_test[200:400]
-y_true = y_true[200:400]
+X_test = X_test[200:300]
+y_true = y_true[200:300]
 
 # Predict the transcriptions (lowercase, no punctuation except ')
-y_pred = []
-for audio in X_test:
-    trans = wrapped_model.transcribe_sample_with_corrector(audio)
-    y_pred.append(trans)
+y_pred = wrapped_model.transcribe_dataset(X_test, method="remove_silence")
 
 # Detect hallucinations and save the results
 results = detect_hallucinations_simple(y_true, y_pred, verbose=True)
