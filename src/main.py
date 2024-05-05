@@ -39,19 +39,24 @@ wrapped_model = WhisperLargeV3Wrapped()
 # Load and augment the dataset
 base_directory = "data/test-other/LibriSpeech/test-other"
 X_test, y_true = load_and_augment_dataset(base_directory)
-X_test = X_test[200:300]
-y_true = y_true[200:300]
 
-# Predict the transcriptions (lowercase, no punctuation except ')
-y_pred = wrapped_model.transcribe_dataset(X_test, method="remove_silence")
+# Run all hallucination suppression methods (and the default method)
+for method in ("default", "explicit_silence", "remove_silence"):
+    # Predict the transcriptions (lowercase, no punctuation except ')
+    y_pred = wrapped_model.transcribe_dataset(X_test, method=method)
 
-# Detect hallucinations and save the results
-results = detect_hallucinations_simple(y_true, y_pred, verbose=True)
+    # Detect hallucinations and save the results
+    results = detect_hallucinations_simple(y_true, y_pred, verbose=False)
 
-# Save the results to results.txt
-with open("results.txt", "w") as f:
-    for key, value in results.items():
-        f.write(f"{key}: {value}\n")
+    # Save y_pred to y_pred.txt
+    with open(f"results_stash/{method}/{method}-y_pred.txt", "w") as f:
+        for line in y_pred:
+            f.write(f"{line}\n")
+
+    # Save the results to results.txt
+    with open(f"results_stash/{method}/{method}-results.txt", "w") as f:
+        for key, value in results.items():
+            f.write(f"{key}: {value}\n")
 
 
 

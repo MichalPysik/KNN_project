@@ -81,3 +81,4 @@ def detect_hallucinations_simple(y_true, y_pred, verbose=False):
         "potentially_hallucinatory_sentences": potentional_halls,
         "common_hallucination_sentences": common_halls
     }
+

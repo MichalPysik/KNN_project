@@ -131,7 +131,7 @@ class WhisperLargeV3Wrapped:
 
         for audio in X_test:
             if method == "default":
-                trans = self.transcribe_sample_raw(audio)
+                trans = self.transcribe_sample_default(audio)
             elif method == "explicit_silence":
                 trans = self.transcribe_sample_explicit_silence(audio)
             elif method == "remove_silence":
