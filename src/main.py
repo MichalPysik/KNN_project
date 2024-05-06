@@ -1,5 +1,6 @@
 import soundfile as sf
 import os
+import string
 from solution import WhisperLargeV3Wrapped
 from hallucination_detection import detect_hallucinations_article, detect_hallucinations_simple
 from data_augmentation import augment_audio, augment_audio_v2
@@ -27,7 +28,7 @@ def load_and_augment_dataset(base_directory):
                 elif entry.path.endswith(".trans.txt") and entry.is_file():
                     with open(entry.path) as tf:
                         for line in tf:
-                            y_true.append(line.split(" ", 1)[1][:-1].lower().strip())
+                            y_true.append(line.split(" ", 1)[1][:-1].lower().strip().translate(str.maketrans('', '', string.punctuation)))
 
 
     return X_test, y_true
@@ -46,7 +47,7 @@ for method in ("default", "explicit_silence", "remove_silence"):
     y_pred = wrapped_model.transcribe_dataset(X_test, method=method)
 
     # Detect hallucinations and save the results
-    results = detect_hallucinations_simple(y_true, y_pred, verbose=False)
+    results = detect_hallucinations_simple(y_true, y_pred, verbose=True)
 
     # Save y_pred to y_pred.txt
     with open(f"results_stash/{method}/{method}-y_pred.txt", "w") as f:

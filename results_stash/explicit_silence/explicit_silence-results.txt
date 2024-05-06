@@ -1,3 +1,3 @@
 total_sentences: 2939
-potentially_hallucinatory_sentences: 1390
-common_hallucination_sentences: 889
+potentially_hallucinatory_sentences: 1385
+common_hallucination_sentences: 888

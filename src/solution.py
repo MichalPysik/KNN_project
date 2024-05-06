@@ -25,18 +25,18 @@ class WhisperLargeV3Wrapped:
     # Transcribe a sample with the main model without any corrections
     def transcribe_sample_default(self, audio):
         trans_punct_main = self.main_model.transcribe(audio, suppress_tokens=self.number_tokens)["text"].lower().strip()
-        trans_main = trans_punct_main.translate(str.maketrans('', '', string.punctuation.replace("\'", "")))
+        trans_main = trans_punct_main.translate(str.maketrans('', '', string.punctuation))
         return trans_main
 
     # Transcribe a sample with the corrector model by matching explicit silence breaks
     def transcribe_sample_explicit_silence(self, audio):
         # Transcribe the audio with the main model
         trans_punct_main = self.main_model.transcribe(audio, suppress_tokens=self.number_tokens)["text"].lower().strip()
-        trans_main = trans_punct_main.translate(str.maketrans('', '', string.punctuation.replace("\'", "")))
+        trans_main = trans_punct_main.translate(str.maketrans('', '', string.punctuation))
 
         # Transcribe the audio with the corrector model
         trans_punct_corrector = self.corrector_model.transcribe(audio, suppress_tokens=self.number_tokens)["text"].lower().strip()
-        trans_corrector = trans_punct_corrector.translate(str.maketrans('', '', string.punctuation.replace("\'", "")))
+        trans_corrector = trans_punct_corrector.translate(str.maketrans('', '', string.punctuation))
 
         return self.correct_with_explicit_silence(trans_main, trans_corrector)
 
