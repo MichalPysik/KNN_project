@@ -1,3 +1,4 @@
 total_sentences: 2939
 potentially_hallucinatory_sentences: 1385
 common_hallucination_sentences: 888
+WER: 0.19938312470912933

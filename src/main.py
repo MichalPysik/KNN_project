@@ -1,9 +1,11 @@
 import soundfile as sf
 import os
 import string
+from torcheval.metrics import WordErrorRate
 from solution import WhisperLargeV3Wrapped
 from hallucination_detection import detect_hallucinations_article, detect_hallucinations_simple
 from data_augmentation import augment_audio, augment_audio_v2
+
 
 
 def load_and_augment_dataset(base_directory):
@@ -48,6 +50,12 @@ for method in ("default", "explicit_silence", "remove_silence"):
 
     # Detect hallucinations and save the results
     results = detect_hallucinations_simple(y_true, y_pred, verbose=True)
+
+    # Also calculate the Word Error Rate across the whole dataset
+    wer_metric = WordErrorRate()
+    wer_metric.update(y_true, y_pred)
+    wer = wer_metric.compute()
+    results["WER"] = wer
 
     # Save y_pred to y_pred.txt
     with open(f"results_stash/{method}/{method}-y_pred.txt", "w") as f:
