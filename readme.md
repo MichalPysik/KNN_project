@@ -2,7 +2,8 @@
 
 ## Složky a soubory
 * final_technical_report.pdf - Výsledná technická zpráva.
-* presentation_slides.pdf - Slidy k prezentaci (obhajobě) projektu.
+* final_presentation_slides.pdf - Slidy k prezentaci (obhajobě) projektu.
+* article_presentation_slides.pdf - Slidy k prezentaci článku v průběhu semestru.
 * /src/ - Zdrojové kódy v jazyce Python (Pozor! vše je psáno tak, aby se zpouštělo z kořenového adresáře)
     * solution.py - Impementace třídy WhisperLargeV3Wrapped, obsahující implementované metody pro potlačení halucinací.
     * main.py - Skript pro spuštění samotného experimentu včetně uložení výstupů.
